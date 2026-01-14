@@ -56,7 +56,7 @@ except ImportError as e:
                            "streamlit", "protobuf==3.20.3", "requests",
                            "streamlit-quill"])
 
-    
+
 import requests
 import streamlit as st
 import time
