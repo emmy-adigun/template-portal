@@ -1,4 +1,4 @@
 requests==2.27.1
 streamlit==1.9.0
 protobuf==3.20.3
-imghdr-deprecated==1.0.0
+imghdr2==1.0.0
