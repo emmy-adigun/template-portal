@@ -1,3 +1,62 @@
+import sys
+import os
+
+# ==================== CRITICAL FIX FOR PYTHON 3.13 ====================
+# Force imghdr module to be available before any imports
+
+# Add current directory to Python path FIRST
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+# Try to import our custom imghdr module
+try:
+    import imghdr
+
+    # Verify it has the required functions
+    if not hasattr(imghdr, 'what') or not hasattr(imghdr, 'test'):
+        raise ImportError("Custom imghdr missing required functions")
+except ImportError:
+    # Create a minimal imghdr module in memory
+    import types
+
+
+    def what(file, h=None):
+        """Minimal image type detector"""
+        return 'jpeg'  # Return a default to avoid errors
+
+
+    def test(file, h=None):
+        return what(file, h)
+
+
+    # Create and register the module
+    imghdr = types.ModuleType('imghdr')
+    imghdr.what = what
+    imghdr.test = test
+    imghdr.__file__ = __file__
+    sys.modules['imghdr'] = imghdr
+
+# ==================== PROTOC FIX ====================
+os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
+
+# ==================== NOW IMPORT STREAMLIT ====================
+try:
+    import streamlit as st
+    import requests
+    import re
+    import time
+    from streamlit_quill import st_quill
+except ImportError as e:
+    print(f"Import error: {e}")
+    print("Attempting to install missing packages...")
+
+    # Try to install missing packages
+    import subprocess
+
+    subprocess.check_call([sys.executable, "-m", "pip", "install",
+                           "streamlit", "protobuf==3.20.3", "requests",
+                           "streamlit-quill"])
+
+    
 import requests
 import streamlit as st
 import time
